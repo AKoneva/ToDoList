@@ -9,13 +9,14 @@
 import Foundation
 import UserNotifications
 import UIKit
+
 var toDoList: [[String: Any]] {
-    set{
+    set {
         let defaults = UserDefaults.standard
-           defaults.set(newValue, forKey: "ToDoDataKey")
-           defaults.synchronize()
+        defaults.set(newValue, forKey: "ToDoDataKey")
+        defaults.synchronize()
     }
-    get{
+    get {
         let defaults = UserDefaults.standard
         if let array = defaults.array(forKey:"ToDoDataKey") as? [[String: Any]]{
             return array
@@ -25,36 +26,35 @@ var toDoList: [[String: Any]] {
         }
     }
 }
-//[["name":"Item1","isCompleted": true],["name":"Item2","isCompleted": false],["name":"Item3","isCompleted": false],["name":"Item4","isCompleted": false],["name":"Item5","isCompleted": false],["name":"Item6","isCompleted": false]]
 
-func addItem(nameItem: String, isCompleted: Bool = false)  {
+func addItem(nameItem: String, isCompleted: Bool = false) {
     toDoList.append(["name": nameItem, "isCompleted": isCompleted])
     setBadge()
 }
-func RemoveItem(index: Int){
+
+func RemoveItem(index: Int) {
     toDoList.remove(at: index)
     setBadge()
 }
-func changeState(at Item: Int) -> Bool{
+
+func changeState(at Item: Int) -> Bool {
     toDoList[Item]["isCompleted"] = !(toDoList[Item]["isCompleted"] as! Bool)
     setBadge()
     return toDoList[Item]["isCompleted"] as! Bool
 }
 
-func moveItemFromTo(fromIndex: Int, toIndex:Int){
+func moveItemFromTo(fromIndex: Int, toIndex:Int) {
     let Item = toDoList[fromIndex]
-           toDoList.remove(at: fromIndex)
-           toDoList.insert(Item, at: toIndex)
-          
+    toDoList.remove(at: fromIndex)
+    toDoList.insert(Item, at: toIndex)
 }
 
-func requestForNotify(){
+func requestForNotify() {
     UNUserNotificationCenter.current().requestAuthorization(options: [.badge]) { (isEnable, error) in
-        
     }
 }
 
-func setBadge(){
+func setBadge() {
     var totalBadgeNumber = 0
     for item in toDoList{
         if (item["isCompleted"] as? Bool) == false{
